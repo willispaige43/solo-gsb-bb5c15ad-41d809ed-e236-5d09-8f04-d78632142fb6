@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>显微图像纹理分区审阅台</h1>
-    <span class="hint">局部梯度方向场 · 分水岭分区 · 低置信边界标注 · 版本化保存</span>
+    <span class="hint">局部梯度方向场 · 分水岭分区 · 低置信边界标注 · 版本化保存 · 版本差异比较</span>
   </header>
 
   <div id="layout">
@@ -34,7 +34,15 @@
 
     <main>
       <section class="panel" id="controlsPanel">
-        <h2>② 阈值参数</h2>
+        <h2>② 工作模式</h2>
+        <div class="mode-switch">
+          <label><input type="radio" name="mode" value="review" checked> 审阅模式（阈值预览 / 保存版本）</label>
+          <label><input type="radio" name="mode" value="diff"> 版本差异模式（比较两个已保存版本）</label>
+        </div>
+      </section>
+
+      <section class="panel" id="reviewPanel">
+        <h2>③ 阈值参数</h2>
         <div class="sliders">
           <label>方向一致性阈值 <output id="ctOut">0.55</output>
             <input type="range" id="ctSlider" min="0.1" max="0.95" step="0.01" value="0.55">
@@ -67,9 +75,40 @@
         </div>
       </section>
 
+      <section class="panel" id="diffPanel" hidden>
+        <h2>③ 版本差异</h2>
+        <div class="diff-selects">
+          <label>基准版
+            <select id="baseVersionSel" disabled></select>
+          </label>
+          <span class="arrow">→</span>
+          <label>对比版
+            <select id="compareVersionSel" disabled></select>
+          </label>
+          <label class="ot-label">重叠阈值 <output id="otOut">0.50</output>
+            <input type="range" id="otSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+          </label>
+        </div>
+        <div class="btn-row view-row">
+          <span class="view-label">画布：</span>
+          <label><input type="radio" name="diffView" value="base"> 基准版</label>
+          <label><input type="radio" name="diffView" value="compare"> 对比版</label>
+          <label><input type="radio" name="diffView" value="overlay" checked> 差异叠加</label>
+          <span id="diffInfo" class="hint"></span>
+        </div>
+        <div class="legend" id="diffLegend">
+          <span><i class="sw" style="background:#4cd964"></i> 未变</span>
+          <span><i class="sw" style="background:#ffb02e"></i> 拆分</span>
+          <span><i class="sw" style="background:#b47bff"></i> 合并</span>
+          <span><i class="sw" style="background:#39c7ff"></i> 新增</span>
+          <span><i class="sw" style="background:#ff5a5a"></i> 消失</span>
+          <span class="hint">1-1 组显示基准轮廓（实线）与对比轮廓（虚线）</span>
+        </div>
+      </section>
+
       <section class="panel">
-        <h2>③ 叠加视图</h2>
-        <div class="toggles">
+        <h2 id="viewPanelTitle">④ 叠加视图</h2>
+        <div class="toggles" id="reviewToggles">
           <label><input type="checkbox" id="showBase" checked> 原图</label>
           <label><input type="checkbox" id="showOri" checked> 方向场</label>
           <label>方向场不透明度 <input type="range" id="oriOpacity" min="0" max="1" step="0.05" value="0.6"></label>
@@ -77,21 +116,39 @@
           <label><input type="checkbox" id="showContour" checked> 区域轮廓</label>
           <label><input type="checkbox" id="showLow" checked> 低置信边界</label>
         </div>
+        <div class="toggles" id="diffToggles" hidden>
+          <label><input type="checkbox" id="diffShowBase" checked> 原图底图</label>
+          <label>差异不透明度 <input type="range" id="diffOpacity" min="0.1" max="1" step="0.05" value="0.55"></label>
+          <label><input type="checkbox" id="diffShowLabel" checked> 组标注</label>
+        </div>
         <div id="stage">
           <div id="placeholder">请上传图像或生成示例图像</div>
           <img id="baseImg" alt="原图">
           <img id="oriImg" alt="方向场">
           <canvas id="overlay"></canvas>
         </div>
-        <div class="legend">
+        <div class="legend" id="reviewLegend">
           <span><i class="sw" style="background:#ffe600"></i> 低置信边界</span>
           <span>方向场色相：主方向（周期 180°），饱和度：一致性</span>
         </div>
       </section>
 
-      <section class="panel">
-        <h2>④ 区域统计</h2>
+      <section class="panel" id="reviewStatsPanel">
+        <h2>⑤ 区域统计</h2>
         <div id="statsWrap"><table id="statsTable"></table></div>
+      </section>
+
+      <section class="panel" id="diffStatsPanel" hidden>
+        <h2>⑤ 差异统计</h2>
+        <div class="diff-filter">
+          <span>按变化类型筛选：</span>
+          <label><input type="checkbox" data-dtype="unchanged" checked> <i class="sw" style="background:#4cd964"></i>未变 <b id="cnt-unchanged">0</b></label>
+          <label><input type="checkbox" data-dtype="split" checked> <i class="sw" style="background:#ffb02e"></i>拆分 <b id="cnt-split">0</b></label>
+          <label><input type="checkbox" data-dtype="merge" checked> <i class="sw" style="background:#b47bff"></i>合并 <b id="cnt-merge">0</b></label>
+          <label><input type="checkbox" data-dtype="added" checked> <i class="sw" style="background:#39c7ff"></i>新增 <b id="cnt-added">0</b></label>
+          <label><input type="checkbox" data-dtype="removed" checked> <i class="sw" style="background:#ff5a5a"></i>消失 <b id="cnt-removed">0</b></label>
+        </div>
+        <div id="diffStatsWrap"><table id="diffStatsTable"></table></div>
       </section>
     </main>
   </div>

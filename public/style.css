@@ -109,3 +109,36 @@ select {
 }
 #toast.show { opacity: 1; }
 #toast.error { border-color: #d05555; color: #ffb3b3; }
+
+/* ---- 版本差异模式 ---- */
+.mode-switch { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; }
+.mode-switch input { accent-color: #2f6fed; }
+
+.diff-selects { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; font-size: 12px; color: #aeb8c6; }
+.diff-selects label { display: flex; flex-direction: column; gap: 4px; }
+.diff-selects select { min-width: 170px; }
+.diff-selects .ot-label { flex: 1; min-width: 220px; }
+.diff-selects .arrow { font-size: 16px; color: #7fd0ff; padding-bottom: 8px; }
+.view-row .view-label { color: #9fb4cc; font-size: 13px; }
+.view-row label { font-size: 13px; }
+.view-row input { accent-color: #2f6fed; }
+#diffInfo { font-size: 12px; }
+
+.diff-filter { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; margin-bottom: 10px; align-items: center; }
+.diff-filter label { display: inline-flex; align-items: center; gap: 4px; }
+.diff-filter b { color: #7fd0ff; font-family: monospace; }
+.diff-filter .sw { margin-right: 2px; }
+.diff-filter input { accent-color: #2f6fed; }
+
+#diffStatsWrap { overflow-x: auto; }
+#diffStatsTable { border-collapse: collapse; width: 100%; font-size: 12px; }
+#diffStatsTable th, #diffStatsTable td {
+  border: 1px solid #2c3440; padding: 5px 8px; text-align: right; white-space: nowrap;
+}
+#diffStatsTable th { background: #232a35; color: #9fb4cc; }
+#diffStatsTable td:nth-child(1), #diffStatsTable td:nth-child(2), #diffStatsTable td:nth-child(3),
+#diffStatsTable th:nth-child(1), #diffStatsTable th:nth-child(2), #diffStatsTable th:nth-child(3) {
+  text-align: left;
+}
+.pos { color: #6ee08a; }
+.neg { color: #ff8a8a; }

@@ -6,6 +6,7 @@ const express = require('express');
 const { initDb } = require('./src/db');
 const { decodeToGray, resizeToMax, encodeGrayPNG, MAX_DIM } = require('./src/image');
 const { computeFields, analyze } = require('./src/analysis');
+const { compareRegions } = require('./src/compare');
 const { renderOrientationPNG } = require('./src/render');
 const { makeDemoImage } = require('./src/demo');
 
@@ -177,6 +178,26 @@ app.get('/api/images/:id/partitions/:version', asyncWrap((req, res) => {
   const row = qPartition.get(img.id, Number(req.params.version));
   if (!row) return res.status(404).json({ error: '版本不存在' });
   res.json({ version: row.version, created_at: row.created_at, params: JSON.parse(row.params), result: JSON.parse(row.result) });
+}));
+
+// 版本差异：取两个已保存版本按像素重叠即时比较（只读，不产生新版本）
+app.post('/api/images/:id/compare', asyncWrap((req, res) => {
+  const img = getImageOr404(req.params.id, res);
+  if (!img) return;
+  const body = req.body || {};
+  const vb = Math.trunc(Number(body.baseVersion));
+  const vc = Math.trunc(Number(body.compareVersion));
+  if (!Number.isInteger(vb) || !Number.isInteger(vc)) {
+    return res.status(400).json({ error: '需要 baseVersion 与 compareVersion 两个版本号' });
+  }
+  const rb = qPartition.get(img.id, vb);
+  const rc = qPartition.get(img.id, vc);
+  if (!rb || !rc) return res.status(404).json({ error: '所选版本不存在' });
+  if (vb === vc) return res.status(400).json({ error: '请选择两个不同的版本' });
+  const diff = compareRegions(JSON.parse(rb.result), JSON.parse(rc.result), {
+    overlapThreshold: body.overlapThreshold,
+  });
+  res.json({ baseVersion: vb, compareVersion: vc, diff });
 }));
 
 app.listen(PORT, () => {
