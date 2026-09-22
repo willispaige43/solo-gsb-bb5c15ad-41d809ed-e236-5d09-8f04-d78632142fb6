@@ -33,6 +33,31 @@
     </aside>
 
     <main>
+      <section class="panel mode-panel">
+        <div class="segmented" id="modeSwitch">
+          <button type="button" id="modeReviewBtn" class="active">审阅模式</button>
+          <button type="button" id="modeDiffBtn">版本差异</button>
+        </div>
+      </section>
+
+      <section class="panel" id="diffPanel" hidden>
+        <h2>② 版本差异比较</h2>
+        <div class="diff-selects">
+          <label class="diff-sel">基准版
+            <select id="baseVersionSelect"></select>
+          </label>
+          <label class="diff-sel">对比版
+            <select id="compareVersionSelect"></select>
+          </label>
+          <label class="diff-th">重叠阈值（交集 / 较小区域面积） <output id="ovOut">0.50</output>
+            <input type="range" id="overlapSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+          </label>
+        </div>
+        <div id="diffSummary" class="hint"></div>
+        <p class="hint diff-note">按像素重叠建立区域对应关系：一对一为“未变”，一对多为“拆分”，多对一为“合并”，
+          低于重叠阈值的区域标记“新增 / 消失”。比较在浏览器内即时完成，<b>不会生成新的分区版本</b>。</p>
+      </section>
+
       <section class="panel" id="controlsPanel">
         <h2>② 阈值参数</h2>
         <div class="sliders">
@@ -69,7 +94,7 @@
 
       <section class="panel">
         <h2>③ 叠加视图</h2>
-        <div class="toggles">
+        <div class="toggles" id="reviewToggles">
           <label><input type="checkbox" id="showBase" checked> 原图</label>
           <label><input type="checkbox" id="showOri" checked> 方向场</label>
           <label>方向场不透明度 <input type="range" id="oriOpacity" min="0" max="1" step="0.05" value="0.6"></label>
@@ -77,20 +102,41 @@
           <label><input type="checkbox" id="showContour" checked> 区域轮廓</label>
           <label><input type="checkbox" id="showLow" checked> 低置信边界</label>
         </div>
+        <div class="toggles diff-views" id="diffToggles" hidden>
+          <label><input type="radio" name="diffView" value="base" checked> 基准版</label>
+          <label><input type="radio" name="diffView" value="compare"> 对比版</label>
+          <label><input type="radio" name="diffView" value="overlay"> 差异叠加</label>
+          <label class="inline"><input type="checkbox" id="diffShowBase"> 以原图为底</label>
+        </div>
         <div id="stage">
           <div id="placeholder">请上传图像或生成示例图像</div>
           <img id="baseImg" alt="原图">
           <img id="oriImg" alt="方向场">
           <canvas id="overlay"></canvas>
         </div>
-        <div class="legend">
+        <div class="legend" id="reviewLegend">
           <span><i class="sw" style="background:#ffe600"></i> 低置信边界</span>
           <span>方向场色相：主方向（周期 180°），饱和度：一致性</span>
+        </div>
+        <div class="legend" id="diffLegend" hidden>
+          <span><i class="sw" style="background:#9fb4c7"></i> 未变</span>
+          <span><i class="sw" style="background:#ffb000"></i> 拆分</span>
+          <span><i class="sw" style="background:#b07bff"></i> 合并</span>
+          <span><i class="sw" style="background:#2ee6a8"></i> 新增</span>
+          <span><i class="sw" style="background:#ff5a5a"></i> 消失</span>
         </div>
       </section>
 
       <section class="panel">
         <h2>④ 区域统计</h2>
+        <div class="diff-filters" id="diffFilters" hidden>
+          <span class="hint">按变化类型筛选：</span>
+          <label><input type="checkbox" class="type-filter" value="match" checked> <i class="sw" style="background:#9fb4c7"></i>未变 (<span id="cnt-match">0</span>)</label>
+          <label><input type="checkbox" class="type-filter" value="split" checked> <i class="sw" style="background:#ffb000"></i>拆分 (<span id="cnt-split">0</span>)</label>
+          <label><input type="checkbox" class="type-filter" value="merge" checked> <i class="sw" style="background:#b07bff"></i>合并 (<span id="cnt-merge">0</span>)</label>
+          <label><input type="checkbox" class="type-filter" value="new" checked> <i class="sw" style="background:#2ee6a8"></i>新增 (<span id="cnt-new">0</span>)</label>
+          <label><input type="checkbox" class="type-filter" value="lost" checked> <i class="sw" style="background:#ff5a5a"></i>消失 (<span id="cnt-lost">0</span>)</label>
+        </div>
         <div id="statsWrap"><table id="statsTable"></table></div>
       </section>
     </main>

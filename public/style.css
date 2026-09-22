@@ -1,4 +1,5 @@
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -65,6 +66,45 @@ select {
   border: 1px solid #3a4452; border-radius: 4px; padding: 6px;
 }
 .scale-row { align-items: center; font-size: 13px; }
+
+/* 模式切换（审阅 / 版本差异） */
+.mode-panel { padding: 8px 12px; }
+.segmented { display: inline-flex; background: #12161c; border: 1px solid #3a4452; border-radius: 6px; padding: 2px; }
+.segmented button {
+  background: transparent; color: #aeb8c6; border-radius: 4px; padding: 6px 18px;
+}
+.segmented button:hover:not(.active) { background: #242b36; color: #dde3ea; }
+.segmented button.active { background: #2f6fed; color: #fff; }
+
+/* 版本差异面板 */
+.diff-selects { display: flex; gap: 18px; flex-wrap: wrap; align-items: flex-end; }
+.diff-sel { font-size: 13px; color: #aeb8c6; display: flex; flex-direction: column; gap: 4px; }
+.diff-sel select { min-width: 190px; }
+.diff-th { font-size: 12px; color: #aeb8c6; flex: 1 1 280px; min-width: 260px; }
+.diff-th output { color: #7fd0ff; margin-left: 6px; font-family: monospace; }
+.diff-note { margin: 10px 0 0; line-height: 1.6; }
+#diffSummary { margin-top: 10px; font-size: 13px; color: #c6cfdb; }
+#diffSummary b { color: #7fd0ff; font-weight: 600; }
+.diff-views label.inline { color: #c6cfdb; }
+
+/* 差异筛选 */
+.diff-filters { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; font-size: 12px; }
+.diff-filters label { cursor: pointer; white-space: nowrap; }
+.diff-filters .sw { margin-right: 3px; }
+
+/* 差异统计表 */
+.type-badge {
+  display: inline-block; padding: 2px 9px; border-radius: 10px;
+  font-size: 11px; color: #14171c; font-weight: 700;
+}
+.id-chip {
+  display: inline-block; background: #2a323e; border: 1px solid #3a4452;
+  border-radius: 4px; padding: 1px 6px; margin: 1px 2px; font-size: 11px;
+}
+.dim { color: #6b7686; }
+.new-val { color: #7ff0c8; }
+.lost-val { color: #ff9b9b; }
+.diff-empty { color: #8a94a3 !important; text-align: center !important; padding: 16px !important; }
 
 .toggles { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-bottom: 10px; align-items: center; }
 .toggles input[type="range"] { width: 110px; vertical-align: middle; }
