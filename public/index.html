@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>显微图像纹理分区审阅台</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>显微图像纹理分区审阅台</h1>
+    <span class="hint">局部梯度方向场 · 分水岭分区 · 低置信边界标注 · 版本化保存</span>
+  </header>
+
+  <div id="layout">
+    <aside>
+      <section class="panel">
+        <h2>① 上传图像</h2>
+        <input type="file" id="fileInput" accept="image/png,image/jpeg">
+        <label class="row">像素尺度 (µm/px)
+          <input type="number" id="pixelScaleInput" step="any" min="0.000001" value="0.5">
+        </label>
+        <div class="btn-row">
+          <button id="uploadBtn">上传</button>
+          <button id="demoBtn" class="ghost">生成示例图像</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>图像列表</h2>
+        <ul id="imageList" class="image-list"></ul>
+      </section>
+    </aside>
+
+    <main>
+      <section class="panel" id="controlsPanel">
+        <h2>② 阈值参数</h2>
+        <div class="sliders">
+          <label>方向一致性阈值 <output id="ctOut">0.55</output>
+            <input type="range" id="ctSlider" min="0.1" max="0.95" step="0.01" value="0.55">
+          </label>
+          <label>梯度强度阈值 <output id="mtOut">0.08</output>
+            <input type="range" id="mtSlider" min="0" max="0.4" step="0.005" value="0.08">
+          </label>
+          <label>最小区域 (px) <output id="maOut">80</output>
+            <input type="range" id="maSlider" min="10" max="2000" step="10" value="80">
+          </label>
+          <label>低置信边界阈值 <output id="lcOut">0.35</output>
+            <input type="range" id="lcSlider" min="0.05" max="0.9" step="0.01" value="0.35">
+          </label>
+          <label>合并方向差 (°) <output id="moOut">8</output>
+            <input type="range" id="moSlider" min="0" max="30" step="0.5" value="8">
+          </label>
+        </div>
+        <div class="btn-row">
+          <button id="analyzeBtn" disabled>分析（预览）</button>
+          <button id="saveBtn" disabled>保存为新版本</button>
+          <select id="versionSelect" disabled></select>
+          <button id="loadVersionBtn" disabled>载入版本</button>
+        </div>
+        <div class="btn-row scale-row">
+          <label>像素尺度 (µm/px)
+            <input type="number" id="scaleEdit" step="any" min="0.000001">
+          </label>
+          <button id="saveScaleBtn" disabled>更新尺度</button>
+          <span id="maskInfo" class="hint"></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>③ 叠加视图</h2>
+        <div class="toggles">
+          <label><input type="checkbox" id="showBase" checked> 原图</label>
+          <label><input type="checkbox" id="showOri" checked> 方向场</label>
+          <label>方向场不透明度 <input type="range" id="oriOpacity" min="0" max="1" step="0.05" value="0.6"></label>
+          <label><input type="checkbox" id="showFill" checked> 区域填充</label>
+          <label><input type="checkbox" id="showContour" checked> 区域轮廓</label>
+          <label><input type="checkbox" id="showLow" checked> 低置信边界</label>
+        </div>
+        <div id="stage">
+          <div id="placeholder">请上传图像或生成示例图像</div>
+          <img id="baseImg" alt="原图">
+          <img id="oriImg" alt="方向场">
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="legend">
+          <span><i class="sw" style="background:#ffe600"></i> 低置信边界</span>
+          <span>方向场色相：主方向（周期 180°），饱和度：一致性</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>④ 区域统计</h2>
+        <div id="statsWrap"><table id="statsTable"></table></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

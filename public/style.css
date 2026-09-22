@@ -1,0 +1,111 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #14171c;
+  color: #dde3ea;
+}
+header {
+  padding: 12px 20px;
+  background: #1c2129;
+  border-bottom: 1px solid #2c3440;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+header h1 { font-size: 18px; margin: 0; }
+.hint { color: #8a94a3; font-size: 12px; }
+
+#layout { display: flex; gap: 14px; padding: 14px; align-items: flex-start; }
+aside { width: 280px; flex: 0 0 280px; display: flex; flex-direction: column; gap: 14px; }
+main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+
+.panel {
+  background: #1c2129;
+  border: 1px solid #2c3440;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.panel h2 { font-size: 14px; margin: 0 0 10px; color: #9fb4cc; }
+
+.row { display: block; margin: 8px 0; font-size: 13px; }
+input[type="number"] {
+  width: 110px; margin-left: 6px;
+  background: #12161c; color: #dde3ea;
+  border: 1px solid #3a4452; border-radius: 4px; padding: 4px 6px;
+}
+input[type="file"] { width: 100%; font-size: 12px; margin-bottom: 8px; }
+
+button {
+  background: #2f6fed; color: #fff; border: 0; border-radius: 5px;
+  padding: 7px 14px; font-size: 13px; cursor: pointer;
+}
+button:disabled { background: #3a4452; color: #7c8798; cursor: not-allowed; }
+button.ghost { background: #2a323e; }
+button.ghost:hover:not(:disabled) { background: #354052; }
+.btn-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+
+.image-list { list-style: none; margin: 0; padding: 0; max-height: 300px; overflow: auto; }
+.image-list li {
+  padding: 7px 9px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  border: 1px solid transparent;
+}
+.image-list li:hover { background: #242b36; }
+.image-list li.active { background: #243044; border-color: #2f6fed; }
+.image-list .meta { display: block; color: #8a94a3; font-size: 11px; }
+
+.sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px 20px; }
+.sliders label { font-size: 12px; color: #aeb8c6; }
+.sliders output { color: #7fd0ff; margin-left: 6px; font-family: monospace; }
+input[type="range"] { width: 100%; accent-color: #2f6fed; }
+
+select {
+  background: #12161c; color: #dde3ea;
+  border: 1px solid #3a4452; border-radius: 4px; padding: 6px;
+}
+.scale-row { align-items: center; font-size: 13px; }
+
+.toggles { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; margin-bottom: 10px; align-items: center; }
+.toggles input[type="range"] { width: 110px; vertical-align: middle; }
+
+#stage {
+  position: relative;
+  background: #0d1014;
+  border: 1px solid #2c3440;
+  border-radius: 6px;
+  min-height: 200px;
+  overflow: hidden;
+  line-height: 0;
+}
+#stage img, #stage canvas {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  image-rendering: pixelated;
+}
+#stage.hidden img, #stage.hidden canvas { display: none; }
+#placeholder {
+  position: absolute; inset: 0; display: flex;
+  align-items: center; justify-content: center;
+  color: #5a6577; font-size: 14px; line-height: 1.5;
+}
+.legend { margin-top: 8px; font-size: 12px; color: #8a94a3; display: flex; gap: 20px; flex-wrap: wrap; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -2px; margin-right: 4px; }
+
+#statsWrap { overflow-x: auto; }
+#statsTable { border-collapse: collapse; width: 100%; font-size: 12px; }
+#statsTable th, #statsTable td {
+  border: 1px solid #2c3440; padding: 5px 8px; text-align: right; white-space: nowrap;
+}
+#statsTable th { background: #232a35; color: #9fb4cc; }
+#statsTable td:first-child, #statsTable th:first-child { text-align: left; }
+.region-chip { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+
+#toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: #2a323e; border: 1px solid #3a4452; border-radius: 6px;
+  padding: 10px 18px; font-size: 13px; opacity: 0; transition: opacity .25s;
+  pointer-events: none; max-width: 80vw;
+}
+#toast.show { opacity: 1; }
+#toast.error { border-color: #d05555; color: #ffb3b3; }
